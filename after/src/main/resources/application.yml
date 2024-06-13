@@ -1,0 +1,44 @@
+﻿spring:
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 20MB
+  datasource:
+    username: root
+    password: root
+    url: jdbc:mysql://localhost:3306/qo_chat?serverTimezone=UTC&useUnicode=true&characterEncoding=utf-8
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      connection-init-sql: SET NAMES utf8mb4
+
+  redis:
+    port: 6379
+    host: 127.0.0.1
+    password: #A_Redis
+
+  # 邮箱配置
+  mail:
+    subject: 'QO-Chat邮箱验证码'
+    host: smtp.qq.com
+    username: 1507393930@qq.com
+    password: XXXXXX
+    properties:
+      mail:
+        smtp:
+          auth: true
+
+mybatis-plus:
+  global-config:
+    db-config:
+      logic-delete-value: "1"
+      logic-not-delete-value: "0"
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  type-aliases-package: com.fas.dto
+
+upload:
+  url: 'C:\Users\yyjccc\OneDrive\桌面\QQweb\before\src\assets\cache'
+
+
+
+

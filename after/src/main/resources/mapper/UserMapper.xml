@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fas.mapper.UserMapper">
+    <select id="getMsgUser" resultType="com.fas.entity.User">
+        SELECT
+        u.*
+        FROM
+        `user` u
+        WHERE
+        u.qo_num IN (
+        SELECT
+        t.talk_user1
+        FROM
+        talk t
+        WHERE
+        t.talk_user2 = #{qoNum} UNION
+        SELECT
+        t.talk_user2
+        FROM
+        talk t
+        WHERE
+        t.talk_user1 = #{qoNum}
+        )
+        AND u.del_logic = 0
+        AND u.nickname like '%${nickname}%'
+    </select>
+    <select id="getFriendList" resultType="com.fas.entity.User">
+        select u.* from `user` u where u.qo_num in (
+            select f.to_user from friend f where f.is_agree = 0 and f.from_user = #{qoNum} UNION
+            select f.from_user from friend f where f.is_agree = 0 and f.to_user = #{qoNum}
+        )
+    </select>
+
+    <select id="getAddGroupUser" resultType="com.fas.entity.User">
+        SELECT
+        *
+        FROM
+        `user` u
+        WHERE
+        u.qo_num NOT IN (
+        SELECT
+        gu.`user`
+        FROM
+        gu
+        WHERE
+        gu.group_num = #{groupNum}
+        and (gu.user_agree = '0' or gu.user_agree = '2')
+        )
+        and u.qo_num in (
+        select u.qo_num from `user` u where u.qo_num in (
+        select f.to_user from friend f where f.is_agree = 0 and f.from_user = #{qoNum} UNION
+        select f.from_user from friend f where f.is_agree = 0 and f.to_user = #{qoNum}
+        )
+        )
+    </select>
+
+    <select id="getAddUser" resultType="com.fas.entity.User">
+        select u.* from `user` u where u.qo_num not in (
+            select f.to_user from friend f where (f.is_agree = '0' or f.is_agree = '2') and f.from_user = #{qoNum} UNION
+            select f.from_user from friend f where (f.is_agree = '0' or f.is_agree = '2') and f.to_user = #{qoNum}
+        ) and u.qo_num != #{qoNum} and u.nickname like '%${nickname}%'
+    </select>
+</mapper>

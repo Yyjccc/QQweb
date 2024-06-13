@@ -1,0 +1,257 @@
+body {
+    margin: 0;
+}
+
+#app {
+    height: 100vh;
+}
+
+.loading-container {
+    display: flex;
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
+}
+
+.loading {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    width: 100px;
+    height: 30px;
+    perspective: 200px;
+    transform-style: preserve-3d;
+
+    .player {
+        position: absolute;
+        left: 0;
+        top: 0;
+        height: 30px;
+        width: 30px;
+        animation: playerMove linear 4s infinite;
+
+        // 上下鄂
+        .top-mouth, .bottom-mouth {
+            position: absolute;
+            width: 0;
+            height: 0;
+            border: 15px solid #fbbc05;
+            transform: rotate(45deg);
+            border-radius: 50%;
+        }
+
+        .top-mouth {
+            border-bottom-color: transparent;
+            border-right-color: transparent;
+            transform: rotate(30deg);
+            animation: 
+                topBite .2s ease-in-out infinite alternate;
+
+            &::after {
+                content: '';
+                position: absolute;
+                margin-top: -11px;
+                margin-left: -3px;
+                width: 5px;
+                height: 5px;
+                border-radius: 50%;
+                background-color: #000;
+            }
+        }
+
+        .bottom-mouth {
+            border-top-color: transparent;
+            border-left-color: transparent;
+            transform: rotate(60deg);
+            animation: 
+                bottomBite .2s ease-in-out infinite alternate;
+        }
+    }
+
+    span.bean:nth-of-type(1) {
+        width: 13px;
+        height: 13px;
+        border-radius: 50%;
+        background-color: #1875e5;
+        animation: beanOut1 4s linear infinite;
+    }
+    
+    span.bean:nth-of-type(2) {
+        width: 13px;
+        height: 13px;
+        border-radius: 50%;
+        background-color: #fbbc05;
+        animation: beanOut2 4s linear infinite;
+    }
+    span.bean:nth-of-type(3) {
+        width: 13px;
+        height: 13px;
+        border-radius: 50%;
+        background-color: #499255;
+        animation: beanOut3 4s linear infinite;
+    }
+}
+
+@keyframes topBite {
+    0% {
+        transform: rotate(45deg);
+    }
+    100% {
+        transform: rotate(20deg);
+    }
+}
+
+@keyframes bottomBite {
+    0% {
+        transform: rotate(45deg);
+    }
+    100% {
+        transform: rotate(80deg);
+    }
+}
+
+@keyframes playerMove {
+    0% {
+        // 总时间 .3 向右移动
+        transform: translateX(0) translateZ(10px);
+    }
+
+    30% {
+        // .2 转身
+        transform: translateX(70px) translateZ(10px);
+    }
+
+    50% {
+        // .3 向左移动
+        transform: translateX(70px) translateZ(10px) rotateY(180deg);
+    }
+
+    80% {
+        // .2 转身
+        transform: translateX(0) translateZ(10px) rotateY(180deg)
+    }
+
+    100% {
+        transform: translateX(0) translateZ(10px) rotateY(360deg);
+    }
+}
+
+/**
+    0% - 15% 吃豆人从起始点向左到中点的过程
+    15% - 30% 吃豆人从中点向左到终点的过程
+    30% - 50% 吃豆人在终点回头的过程
+    50% - 65% 吃豆人从终点向右到中点的过程
+    65% - 80% 吃豆人从中点到起始点的过程
+    80% - 100% 吃豆人在起始点回头的过程
+ */
+@keyframes beanOut1 {
+    0% {
+        opacity: 0;
+    }
+
+    15% {
+        opacity: 0;
+    }
+
+    30% {
+        opacity: 1;
+    }
+
+    74% {
+        opacity: 1;
+    }
+    
+    77% {
+        opacity: 0;
+    }
+
+    80% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
+@keyframes beanOut2 {
+    0% {
+        opacity: 1;
+    }
+
+    9% {
+        opacity: 1;
+    }
+
+    12% {
+        opacity: 0;
+    }
+
+    15% {
+        opacity: 0;
+    }
+
+    30% {
+        opacity: 0;
+    }
+
+    50% {
+        opacity: 1;
+    }
+
+    59% {
+        opacity: 1;
+    }
+
+    62% {
+        opacity: 0;
+    }
+
+    65% {
+        opacity: 0;
+    }
+
+    80% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+@keyframes beanOut3 {
+    0% {
+        opacity: 1;
+    }
+
+    15% {
+        opacity: 1;
+    }
+
+    24% {
+        opacity: 1;
+    }
+
+    27% {
+        opacity: 0;
+    }
+
+    30% {
+        opacity: 0;
+    }
+
+    50% {
+        opacity: 0;
+    }
+
+    65% {
+        opacity: 0;
+    }
+
+    80% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}

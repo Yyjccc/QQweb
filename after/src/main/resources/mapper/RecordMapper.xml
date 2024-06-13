@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fas.mapper.RecordMapper">
+
+    <resultMap id="GetRecord" type="RecordListDto" autoMapping="true">
+        <id property="recordId" column="record_id" />
+        <association property="user" javaType="com.fas.entity.User" autoMapping="true">
+            <id property="qoNum" column="qo_num"/>
+            <result property="createTime" column="u_create_time" />
+            <result property="updateTime" column="u_update_time" />
+        </association>
+    </resultMap>
+
+    <select id="getEndRecord" resultType="com.fas.entity.Record">
+        SELECT
+        r.*
+        FROM
+        talk t
+        left join rt on rt.t_id = t.talk_id
+        left join record r on r.record_id = rt.r_id
+        WHERE
+        (
+        t.talk_user1 = #{qoNum2}
+        and t.talk_user2 = #{qoNum1}
+        ) or (
+        t.talk_user1 = #{qoNum1}
+        and t.talk_user2 = #{qoNum2}
+        )
+        ORDER BY r.create_time desc
+        limit 1
+    </select>
+
+    <select id="getRecord" resultMap="GetRecord">
+        select * from (
+        SELECT
+        r.*,
+        u.create_time u_create_time,
+        u.update_time u_update_time,
+        u.qo_num,
+        u.avatar,
+        u.del_logic,
+        u.description,
+        u.email,
+        u.nickname,
+        u.`password`,
+        u.phone,
+        u.sex
+        FROM
+        talk t
+        left join rt on rt.t_id = t.talk_id
+        left join record r on r.record_id = rt.r_id
+        left join `user` u on u.qo_num = r.record_user
+        WHERE
+        (
+        t.talk_user1 = #{qoNum1}
+        and t.talk_user2 = #{qoNum2}
+        ) or (
+        t.talk_user1 = #{qoNum2}
+        and t.talk_user2 = #{qoNum1}
+        )
+        ORDER BY r.create_time desc
+        limit #{offset},10
+        ) aa ORDER BY aa.create_time asc
+    </select>
+
+
+    <select id="getRecordAll" resultMap="GetRecord">
+        select * from (
+        SELECT
+        r.*,
+        u.create_time u_create_time,
+        u.update_time u_update_time,
+        u.qo_num,
+        u.avatar,
+        u.del_logic,
+        u.description,
+        u.email,
+        u.nickname,
+        u.`password`,
+        u.phone,
+        u.sex
+        FROM
+        talk t
+        left join rt on rt.t_id = t.talk_id
+        left join record r on r.record_id = rt.r_id
+        left join `user` u on u.qo_num = r.record_user
+        WHERE
+        (
+        t.talk_user1 = #{qoNum1}
+        and t.talk_user2 = #{qoNum2}
+        ) or (
+        t.talk_user1 = #{qoNum2}
+        and t.talk_user2 = #{qoNum1}
+        )
+        ORDER BY r.create_time desc
+        limit #{limit}
+        ) aa ORDER BY aa.create_time asc
+    </select>
+</mapper>

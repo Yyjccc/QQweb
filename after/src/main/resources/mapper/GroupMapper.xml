@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fas.mapper.GroupMapper">
+
+    <resultMap id="GetRecord" type="RecordListDto" autoMapping="true">
+        <id property="recordId" column="record_id" />
+        <association property="user" javaType="com.fas.entity.User" autoMapping="true">
+            <id property="qoNum" column="qo_num"/>
+            <result property="createTime" column="u_create_time" />
+            <result property="updateTime" column="u_update_time" />
+        </association>
+    </resultMap>
+
+    <select id="getMessageGroup" resultType="com.fas.entity.Group">
+        SELECT
+        g.*
+        FROM
+        gu
+        left join `group` g on g.group_num = gu.group_num
+        WHERE
+        gu.`user` = #{qoNum}
+        AND gu.user_agree = 0
+        AND gu.group_agree = 0
+    </select>
+
+    <select id="getGroupEncRecord" resultType="com.fas.entity.Record">
+        select r.* from record r left join rg on rg.r_id = r.record_id where g_num = #{groupNum} order by r.create_time desc limit 1
+    </select>
+
+    <select id="getGroupRecordAll" resultMap="GetRecord">
+        select * from (
+        SELECT
+        r.*,
+        u.create_time u_create_time,
+        u.update_time u_update_time,
+        u.qo_num,
+        u.avatar,
+        u.del_logic,
+        u.description,
+        u.email,
+        u.nickname,
+        u.`password`,
+        u.phone,
+        u.sex
+        FROM
+        `group` g
+        LEFT JOIN rg ON rg.g_num = g.group_num
+        LEFT JOIN record r ON r.record_id = rg.r_id
+        LEFT JOIN `user` u ON u.qo_num = r.record_user
+        WHERE
+        g.group_num = #{groupNum}
+        AND u.del_logic = '0'
+        ORDER BY r.create_time desc
+        LIMIT #{offset}
+        ) aa ORDER BY aa.create_time asc
+    </select>
+
+    <select id="getGroupRecord" resultMap="GetRecord">
+        select * from (
+        SELECT
+        r.*,
+        u.create_time u_create_time,
+        u.update_time u_update_time,
+        u.qo_num,
+        u.avatar,
+        u.del_logic,
+        u.description,
+        u.email,
+        u.nickname,
+        u.`password`,
+        u.phone,
+        u.sex
+        FROM
+        `group` g
+        LEFT JOIN rg ON rg.g_num = g.group_num
+        LEFT JOIN record r ON r.record_id = rg.r_id
+        LEFT JOIN `user` u ON u.qo_num = r.record_user
+        WHERE
+        g.group_num = #{groupNum}
+        AND u.del_logic = '0'
+        ORDER BY r.create_time desc
+        LIMIT #{offset},10
+        ) aa ORDER BY aa.create_time asc
+    </select>
+
+    <select id="getUserGroup" resultType="com.fas.entity.Group">
+        SELECT DISTINCT
+        g.*
+        FROM
+        gu
+        LEFT JOIN `group` g ON g.group_num = gu.group_num
+        where
+        gu.user_agree = 0 and
+        gu.group_agree = 0 and
+        gu.`user` = #{qoNum}
+    </select>
+
+    <delete id="delGroup">
+        DELETE FROM `group` WHERE (group_num = #{groupNum})
+    </delete>
+
+    <insert id="insertGroup" parameterType="com.fas.entity.Group">
+        INSERT INTO `group` ( group_num, group_user, group_remark, group_avatar, group_name, create_time ) VALUES ( #{groupNum}, #{groupUser}, #{groupRemark}, #{groupAvatar}, #{groupName}, #{createTime} )
+    </insert>
+</mapper>

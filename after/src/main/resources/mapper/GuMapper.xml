@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fas.mapper.GuMapper">
+    <select id="waitUserList" resultType="com.fas.entity.User">
+        SELECT
+        u.*
+        FROM
+        friend f
+        left join `user` u on u.qo_num = f.from_user
+        WHERE
+        to_user = #{qoNum}
+        AND is_agree = '2'
+    </select>
+
+    <select id="waitGroupList" resultType="com.fas.entity.Group">
+        SELECT
+        g.*
+        FROM
+        gu
+        left join `group` g on g.group_num = gu.group_num
+        WHERE
+        gu.group_agree = '0'
+        AND gu.user_agree = '2'
+        and gu.`user` = #{qoNum}
+    </select>
+
+    <select id="getGroupUserList" resultType="com.fas.entity.User">
+        SELECT
+        u.*
+        FROM
+        gu
+        left join `user` u on u.qo_num = gu.`user`
+        WHERE
+        gu.group_agree = '0'
+        AND gu.user_agree = '0'
+        AND gu.group_num = #{groupNum}
+    </select>
+</mapper>
